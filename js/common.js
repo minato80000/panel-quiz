@@ -35,8 +35,11 @@ function buildBoard() {
     const points = data.points ?? defaultPoints;
 
     panel.textContent = points;
-    if (data.question && data.answer) {
-      panel.classList.add("configured"); // 問題が設定されている場合はクラスを追加
+    if (data.question ) {
+      panel.classList.add("Qconfigured"); // 問題が設定されている場合はクラスを追加
+    }
+    if (data.answer) {
+      panel.classList.add("Aconfigured"); // 答えが設定されている場合はクラスを追加
     }
 
     panel.addEventListener("click", () => openEditor(i, defaultPoints)); // クリック時の処理は後で実装
