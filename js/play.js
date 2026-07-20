@@ -166,19 +166,25 @@ function renderTeamButtons() {
 function awardPoints(teamIndex) {
   teams[teamIndex].score += currentPanel.points;
   renderScoreboard();
-  finishPanel();
+  finishPanel(teamIndex);
 }
 
 // 加点せずに締める
 function noWinner() {
-  finishPanel();
+  finishPanel(null);
 }
 
 // パネルを回答済みにしてモーダルを閉じる
-function finishPanel() {
+// winnerIndex: 加点したチーム番号（正解なしは null）
+function finishPanel(winnerIndex) {
   if (currentPanel && currentPanel.panelEl) {
-    currentPanel.panelEl.classList.add("done");
-    currentPanel.panelEl.disabled = true; // 再クリック不可
+    const el = currentPanel.panelEl;
+    el.disabled = true; // 再クリック不可
+    if (winnerIndex != null) {
+      el.classList.add("won", `team-${winnerIndex % 4}`); // 勝ったチームの色で塗る
+    } else {
+      el.classList.add("done"); // 正解なしはグレー
+    }
     remaining--;
   }
   closeQuiz();

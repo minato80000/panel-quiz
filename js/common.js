@@ -21,6 +21,7 @@ const importInput = document.getElementById("importInput"); // JSON読み込み
 const panelData = {}; // パネルごとのデータ { 番号: {points, question, answer} }
 const genres = []; // 列ごとのジャンル名
 let editingPanelIndex = null; // 現在編集中のパネル番号
+let editingDefaultPoints = 0; // 編集中パネルの既定配点（配点が空のときの代替）
 const STORAGE_KEY = "panelQuizData"; // sessionStorage の保存キー
 
 // =============================================================
@@ -73,6 +74,7 @@ function buildBoard() {
 // モーダルを開き、対象パネルの現在値を入力欄へ反映する
 function openEditor(i, defaultPoints) {
   editingPanelIndex = i;
+  editingDefaultPoints = defaultPoints; // 配点が空のときの代替値として控えておく
   const data = panelData[i] || {};
   pointsInput.value = data.points ?? defaultPoints;
   questionInput.value = data.question ?? "";
@@ -82,8 +84,10 @@ function openEditor(i, defaultPoints) {
 
 // 入力内容を保存して盤面へ反映する
 function savePanel() {
+  const points = parseInt(pointsInput.value, 10);
   panelData[editingPanelIndex] = {
-    points: parseInt(pointsInput.value, 10),
+    // 空欄など数値にできない場合は既定配点にフォールバック（NaN表示を防ぐ）
+    points: Number.isNaN(points) ? editingDefaultPoints : points,
     question: questionInput.value,
     answer: answerInput.value,
   };

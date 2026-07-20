@@ -438,12 +438,26 @@ h1 {
   cursor: pointer;
 }
 
-/* 回答済みパネル */
+/* 回答済みパネル（正解なし＝グレー） */
 .panel.done {
   opacity: 0.4;
   cursor: default;
   background: #e9ecf3;
   color: var(--muted);
+}
+
+/* 勝者チームが取ったパネル（そのチームの色で塗る） */
+.panel.won {
+  cursor: default;
+  color: var(--team-color, var(--accent));
+  background: #fff; /* color-mix 非対応時のフォールバック */
+  background: color-mix(in srgb, var(--team-color, var(--accent)) 16%, #fff);
+  border-color: var(--team-color, var(--accent));
+}
+
+/* 回答済み（done / won）はホバーで動かさない */
+.panel:disabled:hover {
+  transform: none;
 }
 
 /* 勝者表示 */
