@@ -11,9 +11,12 @@ function buildBoard() {
   board.style.gridTemplateRows = `repeat(${rows+1}, 1fr)`;
   board.innerHTML = "";
   for (let c = 0; c < cols; c++) {
-    const head = document.createElement("div");
+    const head = document.createElement("input");
     head.className = "genre";
-    head.textContent = genres[c] || `Genre ${c + 1}`;
+    head.value = genres[c] || `ジャンル ${c + 1}`;
+    head.addEventListener("input", () => {
+      genres[c] = head.value;
+    });
     board.appendChild(head);
   }
   for (let i = 0; i < rows * cols; i++) {
