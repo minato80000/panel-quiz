@@ -7,6 +7,7 @@ function buildBoard() {
   const rows = parseInt(rowInput.value, 10);
   const cols = parseInt(colInput.value, 10);
   board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  board.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
   board.innerHTML = "";
     for (let i = 0; i < rows * cols; i++) {
         const panel = document.createElement("button");
@@ -15,5 +16,6 @@ function buildBoard() {
     }
 }
 
-createBtn.addEventListener("click", buildBoard);
+rowInput.addEventListener("change", buildBoard);
+colInput.addEventListener("change", buildBoard);
 buildBoard();
