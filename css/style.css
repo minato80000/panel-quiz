@@ -4,10 +4,53 @@ body {
 }
 
 .controls {
+  margin: auto;
   margin-bottom: 16px;
 }
 .controls input {
   width: 60px;
+}
+
+.modal {
+  display: none; /*初期状態では非表示*/
+  position: fixed; /* 画面に固定 */
+  inset: 0; /* 画面全体に広げる */
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明の黒背景 */
+  align-items: center; /* 垂直方向の中央揃え */
+  justify-content: center; /* 水平方向の中央揃え */
+  z-index: 10; /* 他の要素より前面に表示 */
+}
+
+.modal-content {
+  background-color: #fff; /* モーダルの背景色 */
+  color: #000; /* 文字色 */
+  width: min(
+    80%,
+    400px
+  ); /* モーダルの幅を画面幅の80%または400pxの小さい方に設定 */
+  display: flex; /* フレックスボックスを有効化 */
+  flex-direction: column; /* 子要素を縦方向に配置 */
+  gap: 16px; /* 子要素間の隙間 */
+  padding: 20px; /* 内側の余白 */
+  border-radius: 10px; /* 角を丸くする */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 影を付ける */
+}
+
+.modal-content label {
+  display: flex;
+  flex-direction: column; /* ラベル内の要素を縦方向に配置 */
+  font-size: 16px; /* フォントサイズを設定 */
+  font-weight: bold; /* フォントを太字に設定 */
+}
+
+.modal-content textarea {
+  resize: none; /* ユーザーによるリサイズを無効化 */
+  width: 100%; /* 幅を100%に設定 */
+  height: 100px; /* 高さを100pxに設定 */
+  padding: 8px; /* 内側の余白 */
+  font-size: 14px; /* フォントサイズを設定 */
+  border: 1px solid #ccc; /* 枠線の色を設定 */
+  border-radius: 4px; /* 角を丸くする */
 }
 
 .board {
@@ -21,7 +64,7 @@ body {
 .genre {
   display: flex;
   text-align: center;
-  font-size: 20px;
+  font-size: 30px;
   font-weight: bold;
   color: #fff;
   background: #1a1a1f;
@@ -41,3 +84,5 @@ body {
   border-radius: 10px;
   cursor: pointer;
 }
+
+.panel.configured { background: #d6f5d6; }  /* 問題を設定したら薄緑に */

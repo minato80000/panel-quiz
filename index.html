@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パネルクイズ</title>
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-    <h1>パネルクイズ</h1>
-    <div id="board" class="board">
-    ここにパネルが作られる予定
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>パネルクイズ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <h1>パネルクイズ</h1>
+  <div id="board" class="board"></div>
+
+  <div id="panel-editor" class="modal">
+    <div class="modal-content">
+      <h2>パネルの設定</h2>
+      <label>配点<input id="editPoints" type="number"></label>
+      <label>問題文<textarea id="editQuestion" placeholder="問題文を入力してください"></textarea></label>
+      <label>解答<input id="editAnswer" type="text" placeholder="解答を入力してください"></label>
+      <div class="modalButtons">
+        <button id="saveButton">保存</button>
+        <button id="cancelButton">キャンセル</button>
+      </div>
     </div>
-    <div class="controls">
+  </div>
+
+  <div class="controls">
+    <div class="row-col-inputs">
       行<input id="rows" type="number" value="3" min="1" max="10">
       列<input id="cols" type="number" value="3" min="1" max="10">
     </div>
-    <script src="js/common.js"></script>
-  </body>
+    <button id="start">スタート</button>
+  </div>
+  <script src="js/common.js"></script>
+</body>
 
 
 </html>

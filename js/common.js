@@ -1,17 +1,20 @@
 const rowInput = document.getElementById("rows");
 const colInput = document.getElementById("cols");
 const board = document.getElementById("board");
+const panelData = {}; // パネルのデータを保持するオブジェクト
+// パネルのデータ構造例: {points:得点，question:質問文，answer:答え}
 
-const genres = [];  // 列ごとのジャンル
+const genres = []; // 列ごとのジャンル
 
 function buildBoard() {
   const rows = parseInt(rowInput.value, 10);
   const cols = parseInt(colInput.value, 10);
   board.style.gridTemplateColumns = `repeat(${cols}, minmax(100px, 1fr))`;
-  board.style.gridTemplateRows = `repeat(${rows+1}, minmax(60px, 1fr))`;
-  board.innerHTML = ""; 
+  board.style.gridTemplateRows = `repeat(${rows + 1}, minmax(60px, 1fr))`;
+  board.innerHTML = "";
 
-  for (let c = 0; c < cols; c++) {// ジャンル入力欄を作成
+  for (let c = 0; c < cols; c++) {
+    // ジャンル入力欄を作成
     const head = document.createElement("input");
     head.className = "genre";
     head.value = genres[c] || `ジャンル ${c + 1}`;
@@ -21,19 +24,56 @@ function buildBoard() {
     board.appendChild(head);
   }
 
-  for (let i = 0; i < rows * cols; i++) {// パネルを作成
+  for (let i = 0; i < rows * cols; i++) {
+    // パネルを作成
     const panel = document.createElement("button");
     panel.className = "panel";
 
     const row = Math.floor(i / cols);
-    const points = (row + 1) * 100; // ポイントは行番号に応じて100, 200, 300...
-    
+    const defaultPoints = (row + 1) * 100; // デフォルトのポイントは行番号に応じて100, 200, 300...
+    const data = panelData[i] || {};
+    const points = data.points ?? defaultPoints;
+
     panel.textContent = points;
-    
+    if (data.question && data.answer) {
+      panel.classList.add("configured"); // 問題が設定されている場合はクラスを追加
+    }
+
+    panel.addEventListener("click", () => openEditor(i, defaultPoints)); // クリック時の処理は後で実装
+
     board.appendChild(panel);
   }
 }
 
-rowInput.addEventListener("change", buildBoard);
-colInput.addEventListener("change", buildBoard);
+const modal = document.getElementById("panel-editor");
+const pointsInput = document.getElementById("editPoints");
+const questionInput = document.getElementById("editQuestion");
+const answerInput = document.getElementById("editAnswer");
+let editingPanelIndex = null;
+
+function openEditor(i, defaultPoints) {
+  editingPanelIndex = i;
+  const data = panelData[i] || {};
+  pointsInput.value = data.points ?? defaultPoints;
+  questionInput.value = data.question ?? "";
+  answerInput.value = data.answer ?? "";
+  modal.style.display = "flex"; // モーダルを表示
+}
+
+document.getElementById("saveButton").addEventListener("click", () => {
+  panelData[editingPanelIndex] = {
+    points: parseInt(pointsInput.value, 10),
+    question: questionInput.value,
+    answer: answerInput.value,
+  };
+  modal.style.display = "none"; // モーダルを非表示
+  buildBoard(); // ボードを再構築して変更を反映
+});
+
+document.getElementById("cancelButton").addEventListener("click", () => {
+  modal.style.display = "none"; // モーダルを非表示
+});
+
+rowInput.addEventListener("change", buildBoard); //行数の変更時にボードを再構築
+colInput.addEventListener("change", buildBoard); //列数の変更時にボードを再構築
 buildBoard();
