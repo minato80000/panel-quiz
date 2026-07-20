@@ -13,6 +13,8 @@ const pointsInput = document.getElementById("editPoints");
 const questionInput = document.getElementById("editQuestion");
 const answerInput = document.getElementById("editAnswer");
 
+const startButton = document.getElementById("start"); // クイズ開始ボタン
+
 // --- 状態（アプリが保持するデータ） --------------------------
 const panelData = {}; // パネルごとのデータ { 番号: {points, question, answer} }
 const genres = []; // 列ごとのジャンル名
@@ -120,6 +122,7 @@ function loadData() {
     if (data.panelData) Object.assign(panelData, data.panelData);
   } catch (e) {
     console.error("Failed to load data:", e);
+    return null;
   }
 }
 
@@ -158,6 +161,11 @@ rowInput.addEventListener("change", () => {
 colInput.addEventListener("change", () => {
   buildBoard();
   saveData();
+});
+
+startButton.addEventListener("click", () => {
+  saveData(); // 盤面の状態を保存してから
+  window.location.href = "play.html"; // クイズページへ遷移
 });
 
 // =============================================================
