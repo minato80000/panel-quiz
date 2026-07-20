@@ -14,6 +14,8 @@ const questionInput = document.getElementById("editQuestion");
 const answerInput = document.getElementById("editAnswer");
 
 const startButton = document.getElementById("start"); // クイズ開始ボタン
+const exportButton = document.getElementById("exportButton"); // JSON書き出し
+const importInput = document.getElementById("importInput"); // JSON読み込み
 
 // --- 状態（アプリが保持するデータ） --------------------------
 const panelData = {}; // パネルごとのデータ { 番号: {points, question, answer} }
@@ -98,15 +100,30 @@ function cancelEditor() {
 // =============================================================
 // データの永続化（sessionStorage）
 // =============================================================
-// 現在の状態を保存する
-function saveData() {
-  const data = {
+// 現在の状態を1つのオブジェクトにまとめる
+function collectData() {
+  return {
     rows: rowInput.value,
     cols: colInput.value,
     genres: genres,
     panelData: panelData,
   };
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// 読み込んだデータを状態へ反映する（sessionStorage・JSON共通）
+function applyData(data) {
+  if (data.rows) rowInput.value = data.rows;
+  if (data.cols) colInput.value = data.cols;
+  // const の配列/オブジェクトは中身を詰め替える（再代入はしない）
+  genres.length = 0;
+  if (data.genres) data.genres.forEach((genre, i) => (genres[i] = genre));
+  for (const key in panelData) delete panelData[key];
+  if (data.panelData) Object.assign(panelData, data.panelData);
+}
+
+// 現在の状態を保存する
+function saveData() {
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
 }
 
 // 保存済みの状態を復元する（無ければ何もしない）
@@ -114,16 +131,40 @@ function loadData() {
   const raw = sessionStorage.getItem(STORAGE_KEY);
   if (!raw) return;
   try {
-    const data = JSON.parse(raw);
-    if (data.rows) rowInput.value = data.rows;
-    if (data.cols) colInput.value = data.cols;
-    // const の配列/オブジェクトは中身を詰め替える（再代入はしない）
-    if (data.genres) data.genres.forEach((genre, i) => (genres[i] = genre));
-    if (data.panelData) Object.assign(panelData, data.panelData);
+    applyData(JSON.parse(raw));
   } catch (e) {
     console.error("Failed to load data:", e);
-    return null;
   }
+}
+
+// =============================================================
+// JSON エクスポート / インポート
+// =============================================================
+// 現在の状態を JSON ファイルとしてダウンロードする
+function exportData() {
+  const json = JSON.stringify(collectData(), null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "panel-quiz.json";
+  a.click();
+  URL.revokeObjectURL(url); // 一時URLを解放
+}
+
+// 選択された JSON ファイルを読み込んで状態を置き換える
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      applyData(JSON.parse(reader.result));
+      buildBoard(); // 復元した状態で描画
+      saveData(); // sessionStorage にも反映
+    } catch (e) {
+      alert("読み込みに失敗しました: " + e.message);
+    }
+  };
+  reader.readAsText(file);
 }
 
 // =============================================================
@@ -166,6 +207,14 @@ colInput.addEventListener("change", () => {
 startButton.addEventListener("click", () => {
   saveData(); // 盤面の状態を保存してから
   window.location.href = "play.html"; // クイズページへ遷移
+});
+
+// JSON 書き出し / 読み込み
+exportButton.addEventListener("click", exportData);
+importInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (file) importData(file);
+  e.target.value = ""; // 同じファイルを連続で選べるようにリセット
 });
 
 // =============================================================

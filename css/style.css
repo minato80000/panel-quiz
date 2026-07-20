@@ -98,6 +98,25 @@ h1 {
   transform: translateY(0);
 }
 
+/* JSON エクスポート / インポート */
+.io-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  background: #fff;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.io-btn:hover {
+  background: #f2f4fb;
+}
+.import-label {
+  display: inline-flex;
+  align-items: center;
+}
+
 /* ===== 盤面 ===== */
 .board {
   display: grid; /* グリッド配置（列・行はJSが指定） */
