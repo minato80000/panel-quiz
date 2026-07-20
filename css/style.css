@@ -277,7 +277,7 @@ h1 {
 
 /* ===== プレイ: 出題モーダル ===== */
 .hidden {
-  display: none;
+  display: none !important; /* 他の display 指定より優先して確実に隠す */
 }
 .quiz-info {
   margin: 0;
@@ -387,8 +387,9 @@ h1 {
   margin-bottom: 18px;
 }
 .team-card {
+  position: relative;
   min-width: 120px;
-  padding: 12px 18px;
+  padding: 20px 18px 12px;
   text-align: center;
   background: #fff;
   border: 1px solid var(--panel-border);
@@ -396,14 +397,51 @@ h1 {
   border-radius: 12px;
   box-shadow: var(--shadow);
 }
-.team-card-name {
+.team-card-name-input {
+  width: 96px;
+  text-align: center;
   font-weight: 700;
   color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--panel-border);
+}
+.team-card-name-input:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
 }
 .team-card-score {
   font-size: 28px;
   font-weight: 800;
   color: var(--team-color, var(--accent));
+}
+.team-remove {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  font-size: 12px;
+  color: var(--muted);
+  background: #f0f0f5;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.team-remove:hover {
+  background: #e2e2ee;
+}
+.add-team-btn {
+  display: block;
+  margin: 0 auto 18px;
+  padding: 8px 18px;
+  font-weight: 700;
+  color: var(--accent);
+  background: #fff;
+  border: 1px dashed var(--accent);
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 /* 加点段階のボタン群 */

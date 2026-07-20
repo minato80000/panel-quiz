@@ -1,19 +1,16 @@
 // =============================================================
 // パネルクイズ 遊ぶページ（チーム対抗）
-//   チーム設定 → 出題 → 答え表示後にチームを選んで加点 → 全問で勝敗
+//   チームはプレイ中に自由に追加/削除できる（0チームでも可）
+//   出題 → 答え表示後にチームを選んで加点 → 全問で勝敗
 // =============================================================
 
 // --- 要素の取得 ---------------------------------------------
 const board = document.getElementById("board");
 const STORAGE_KEY = "panelQuizData"; // 作成ページと同じ保存キー
 
-// チーム設定 / ゲーム画面
-const setupEl = document.getElementById("setup");
-const gameEl = document.getElementById("game");
-const teamCountSel = document.getElementById("teamCount");
-const teamNamesEl = document.getElementById("teamNames");
-const startGameBtn = document.getElementById("startGame");
+// スコアボード / チーム管理
 const scoreboardEl = document.getElementById("scoreboard");
+const addTeamBtn = document.getElementById("addTeam");
 const winnerEl = document.getElementById("winner");
 
 // 出題モーダル
@@ -25,6 +22,7 @@ const revealRow = document.getElementById("revealRow"); // 「答えを見る」
 const revealButton = document.getElementById("revealButton");
 const closeButton = document.getElementById("closeButton");
 const scoreRow = document.getElementById("scoreRow"); // 加点段階
+const scoreLabel = document.getElementById("scoreLabel");
 const teamButtons = document.getElementById("teamButtons");
 const noWinnerButton = document.getElementById("noWinnerButton");
 
@@ -49,49 +47,43 @@ function loadData() {
 }
 
 // =============================================================
-// チーム設定
+// チーム管理（プレイ中に増減）
 // =============================================================
-// チーム数に応じて名前入力欄を作り直す
-function renderTeamNameInputs() {
-  const n = parseInt(teamCountSel.value, 10);
-  teamNamesEl.innerHTML = "";
-  for (let i = 0; i < n; i++) {
-    const input = document.createElement("input");
-    input.type = "text";
-    input.className = "team-name-input";
-    input.value = `チーム${i + 1}`;
-    teamNamesEl.appendChild(input);
-  }
-}
-
-// 設定を確定してゲーム開始
-function startGame() {
-  const inputs = teamNamesEl.querySelectorAll(".team-name-input");
-  teams = Array.from(inputs).map((inp, i) => ({
-    name: inp.value.trim() || `チーム${i + 1}`,
-    score: 0,
-  }));
-  setupEl.classList.add("hidden");
-  gameEl.classList.remove("hidden");
+// チームを1つ追加
+function addTeam() {
+  teams.push({ name: `チーム${teams.length + 1}`, score: 0 });
   renderScoreboard();
-  renderBoard(quizData);
 }
 
-// =============================================================
-// スコアボード
-// =============================================================
+// 指定チームを削除
+function removeTeam(index) {
+  teams.splice(index, 1);
+  renderScoreboard();
+}
+
+// スコアボードを描画（名前は編集可、×で削除）
 function renderScoreboard() {
   scoreboardEl.innerHTML = "";
   teams.forEach((t, i) => {
     const card = document.createElement("div");
-    card.className = `team-card team-${i}`;
-    const name = document.createElement("div");
-    name.className = "team-card-name";
-    name.textContent = t.name;
+    card.className = `team-card team-${i % 4}`; // 色は4色を循環
+
+    const remove = document.createElement("button");
+    remove.className = "team-remove";
+    remove.textContent = "×";
+    remove.title = "このチームを削除";
+    remove.addEventListener("click", () => removeTeam(i));
+
+    const name = document.createElement("input");
+    name.className = "team-card-name-input";
+    name.value = t.name;
+    name.addEventListener("input", () => (t.name = name.value)); // 名前を即反映
+
     const score = document.createElement("div");
     score.className = "team-card-score";
     score.textContent = t.score;
-    card.append(name, score);
+
+    card.append(remove, name, score);
     scoreboardEl.appendChild(card);
   });
 }
@@ -144,7 +136,8 @@ function openQuiz(pd, points, panelEl) {
 
   quizAnswer.classList.add("hidden");
   revealRow.classList.remove("hidden"); // 「答えを見る」段階
-  scoreRow.classList.add("hidden"); // 加点ボタンは隠す
+  scoreRow.classList.add("hidden"); // 加点段階は隠す
+  teamButtons.innerHTML = ""; // 前回の加点ボタンを消す
   quizModal.style.display = "flex";
 }
 
@@ -153,15 +146,16 @@ function revealAnswer() {
   quizAnswer.classList.remove("hidden");
   revealRow.classList.add("hidden");
   renderTeamButtons();
+  scoreLabel.classList.toggle("hidden", teams.length === 0); // 0チームならラベル非表示
   scoreRow.classList.remove("hidden");
 }
 
-// チームごとの加点ボタンを作る
+// 現在のチームぶんの加点ボタンを作る（0チームなら空）
 function renderTeamButtons() {
   teamButtons.innerHTML = "";
   teams.forEach((t, i) => {
     const btn = document.createElement("button");
-    btn.className = `team-btn team-${i}`;
+    btn.className = `team-btn team-${i % 4}`;
     btn.textContent = `${t.name} +${currentPanel.points}`;
     btn.addEventListener("click", () => awardPoints(i));
     teamButtons.appendChild(btn);
@@ -175,7 +169,7 @@ function awardPoints(teamIndex) {
   finishPanel();
 }
 
-// 加点せずに締める（正解なし）
+// 加点せずに締める
 function noWinner() {
   finishPanel();
 }
@@ -188,7 +182,7 @@ function finishPanel() {
     remaining--;
   }
   closeQuiz();
-  if (remaining <= 0) showWinner(); // 全問終了で勝敗
+  if (remaining <= 0 && teams.length > 0) showWinner(); // 全問終了＆チームあり
 }
 
 // 加点せず単に閉じる（Esc・背景・閉じるボタン）
@@ -213,8 +207,7 @@ function showWinner() {
 // =============================================================
 // イベント登録
 // =============================================================
-teamCountSel.addEventListener("change", renderTeamNameInputs);
-startGameBtn.addEventListener("click", startGame);
+addTeamBtn.addEventListener("click", addTeam);
 revealButton.addEventListener("click", revealAnswer);
 closeButton.addEventListener("click", closeQuiz);
 noWinnerButton.addEventListener("click", noWinner);
@@ -235,8 +228,12 @@ document.addEventListener("keydown", (e) => {
 // =============================================================
 quizData = loadData();
 if (!quizData) {
-  setupEl.textContent =
-    "データがありません。先に作成ページでクイズを作ってください。";
+  board.textContent = "データがありません。先に作成ページでクイズを作ってください。";
 } else {
-  renderTeamNameInputs(); // 初期のチーム名入力欄を用意
+  teams = [
+    { name: "チーム1", score: 0 },
+    { name: "チーム2", score: 0 },
+  ]; // 既定は2チーム（プレイ中に増減・0チームも可）
+  renderScoreboard();
+  renderBoard(quizData);
 }

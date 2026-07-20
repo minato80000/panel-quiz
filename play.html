@@ -14,26 +14,12 @@
         <a href="index.html">← 作成にもどる</a>
     </div>
 
-    <!-- チーム設定画面 -->
-    <div id="setup" class="setup card">
-        <h2>チーム設定</h2>
-        <label class="setup-field">チーム数
-            <select id="teamCount">
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-        </label>
-        <div id="teamNames" class="team-names"></div>
-        <button id="startGame" class="primary-btn">ゲーム開始</button>
-    </div>
+    <!-- スコアボード（プレイ中にチームを増減できる） -->
+    <div id="scoreboard" class="scoreboard"></div>
+    <button id="addTeam" class="add-team-btn">＋ チーム追加</button>
 
-    <!-- ゲーム画面 -->
-    <div id="game" class="hidden">
-        <div id="scoreboard" class="scoreboard"></div>
-        <div id="board" class="board"></div>
-        <div id="winner" class="winner hidden"></div>
-    </div>
+    <div id="board" class="board"></div>
+    <div id="winner" class="winner hidden"></div>
 
     <!-- 出題モーダル -->
     <div id="quiz-modal" class="modal">
@@ -50,9 +36,9 @@
 
             <!-- 加点段階（答え表示後に出る） -->
             <div id="scoreRow" class="score-row hidden">
-                <p class="quiz-info">正解したチームを選んで加点</p>
+                <p id="scoreLabel" class="quiz-info">正解したチームを選んで加点</p>
                 <div id="teamButtons" class="team-buttons"></div>
-                <button id="noWinnerButton">正解なし</button>
+                <button id="noWinnerButton">加点せず閉じる</button>
             </div>
         </div>
     </div>
