@@ -35,7 +35,7 @@ function buildBoard() {
     const points = data.points ?? defaultPoints;
 
     panel.textContent = points;
-    if (data.question ) {
+    if (data.question) {
       panel.classList.add("Qconfigured"); // 問題が設定されている場合はクラスを追加
     }
     if (data.answer) {
@@ -63,7 +63,7 @@ function openEditor(i, defaultPoints) {
   modal.style.display = "flex"; // モーダルを表示
 }
 
-document.getElementById("saveButton").addEventListener("click", () => {
+function savePanel() {
   panelData[editingPanelIndex] = {
     points: parseInt(pointsInput.value, 10),
     question: questionInput.value,
@@ -71,10 +71,33 @@ document.getElementById("saveButton").addEventListener("click", () => {
   };
   modal.style.display = "none"; // モーダルを非表示
   buildBoard(); // ボードを再構築して変更を反映
+}
+
+function cancelEditor() {
+  modal.style.display = "none"; // モーダルを非表示
+}
+
+document.getElementById("saveButton").addEventListener("click", savePanel);
+document.getElementById("cancelButton").addEventListener("click", cancelEditor);
+document.addEventListener("keydown", (e) => {
+  if (modal.style.display !== "flex") return; // モーダルが開いている時だけ有効
+  if (
+    e.key === "Enter" &&
+    e.target !== questionInput &&
+    e.target !== answerInput
+  ) {
+    e.preventDefault(); // Enterキーのデフォルト動作を防ぐ
+    savePanel();
+  }
+  if (e.key === "Escape") {
+    cancelEditor();
+  }
 });
 
-document.getElementById("cancelButton").addEventListener("click", () => {
-  modal.style.display = "none"; // モーダルを非表示
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    cancelEditor();
+  }
 });
 
 rowInput.addEventListener("change", buildBoard); //行数の変更時にボードを再構築
