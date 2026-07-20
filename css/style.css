@@ -8,9 +8,7 @@
   --panel-bg: #ffffff;
   --panel-border: #d3d8ec;
   --header-bg: #2c2f52; /* ジャンル見出しの背景 */
-  --done-bg: #e3f9ee; /* 設定済みパネル */
-  --done-border: #34c58a;
-  --done-ink: #178a5c;
+  --done-border: #34c58a; /* 設定済みインジケータ Q✓/A✓ の色 */
   --radius: 14px;
   --shadow: 0 6px 20px rgba(31, 37, 64, 0.1);
 }
@@ -340,61 +338,6 @@ h1 {
 }
 .team-3 {
   --team-color: #34c58a;
-}
-
-/* チーム設定画面 */
-.card {
-  background: #fff;
-  border: 1px solid var(--panel-border);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: var(--shadow);
-}
-.setup {
-  max-width: 480px;
-  margin: 0 auto 24px;
-}
-.setup h2 {
-  margin-top: 0;
-  text-align: center;
-}
-.setup-field {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  font-weight: 700;
-  color: var(--muted);
-}
-.setup-field select {
-  padding: 8px 10px;
-  font-size: 16px;
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-}
-.team-names {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-.team-name-input {
-  padding: 10px 12px;
-  font-size: 15px;
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-}
-.primary-btn {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background: linear-gradient(180deg, #6d6df2, var(--accent));
-  box-shadow: 0 4px 12px rgba(91, 91, 239, 0.35);
 }
 
 /* スコアボード */
