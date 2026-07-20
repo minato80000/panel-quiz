@@ -7,8 +7,8 @@ const genres = [];  // 列ごとのジャンル
 function buildBoard() {
   const rows = parseInt(rowInput.value, 10);
   const cols = parseInt(colInput.value, 10);
-  board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-  board.style.gridTemplateRows = `repeat(${rows+1}, 1fr)`;
+  board.style.gridTemplateColumns = `repeat(${cols}, minmax(100px, 1fr))`;
+  board.style.gridTemplateRows = `repeat(${rows+1}, minmax(60px, 1fr))`;
   board.innerHTML = "";
   for (let c = 0; c < cols; c++) {
     const head = document.createElement("input");

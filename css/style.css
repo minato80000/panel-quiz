@@ -13,14 +13,13 @@ body {
 .board {
   display: grid; /* グリッド配置を有効化 */
   gap: 8px; /* パネル同士の隙間 */
-  width: 90%; /* ボードの幅を90%に設定 */ 
+  width: 90%; /* ボードの幅を90%に設定 */
   aspect-ratio: 3 / 1; /* パネルの縦横比を3:1に固定 */
   margin-inline: auto; /* ボードを中央に配置 */
+  overflow: auto; /* ボードの内容がはみ出した場合にスクロールバーを表示 */
 }
 .genre {
   display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   font-size: 20px;
   font-weight: bold;
@@ -29,7 +28,7 @@ body {
   border: 2px solid #000000;
   border-radius: 10px;
 }
-  
+
 .panel {
   display: flex;
   align-items: center;
