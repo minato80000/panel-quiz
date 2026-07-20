@@ -274,3 +274,36 @@ h1 {
 #cancelButton:hover {
   background: #e3e6f1;
 }
+
+/* ===== プレイ: 出題モーダル ===== */
+.hidden {
+  display: none;
+}
+.quiz-info {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+}
+#quizQuestion {
+  text-align: center;
+  font-size: 24px;
+}
+.quiz-answer {
+  margin: 0;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+}
+#revealButton {
+  color: #fff;
+  background: linear-gradient(180deg, #6d6df2, var(--accent));
+  box-shadow: 0 4px 12px rgba(91, 91, 239, 0.35);
+}
+#closeButton {
+  color: var(--muted);
+  background: #eef0f7;
+  border-color: var(--panel-border);
+}
