@@ -307,3 +307,150 @@ h1 {
   background: #eef0f7;
   border-color: var(--panel-border);
 }
+
+/* ===== プレイ: チーム対抗 ===== */
+/* チーム色（--team-color を子要素で参照する） */
+.team-0 {
+  --team-color: #ef5da8;
+}
+.team-1 {
+  --team-color: #5b8def;
+}
+.team-2 {
+  --team-color: #f5a623;
+}
+.team-3 {
+  --team-color: #34c58a;
+}
+
+/* チーム設定画面 */
+.card {
+  background: #fff;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.setup {
+  max-width: 480px;
+  margin: 0 auto 24px;
+}
+.setup h2 {
+  margin-top: 0;
+  text-align: center;
+}
+.setup-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.setup-field select {
+  padding: 8px 10px;
+  font-size: 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+.team-names {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.team-name-input {
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #6d6df2, var(--accent));
+  box-shadow: 0 4px 12px rgba(91, 91, 239, 0.35);
+}
+
+/* スコアボード */
+.scoreboard {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.team-card {
+  min-width: 120px;
+  padding: 12px 18px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--panel-border);
+  border-top: 4px solid var(--team-color, var(--accent));
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.team-card-name {
+  font-weight: 700;
+  color: var(--ink);
+}
+.team-card-score {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--team-color, var(--accent));
+}
+
+/* 加点段階のボタン群 */
+.score-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.team-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.team-btn {
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  background: var(--team-color, var(--accent));
+}
+#noWinnerButton {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  background: #eef0f7;
+  border: 1px solid var(--panel-border);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+/* 回答済みパネル */
+.panel.done {
+  opacity: 0.4;
+  cursor: default;
+  background: #e9ecf3;
+  color: var(--muted);
+}
+
+/* 勝者表示 */
+.winner {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-top: 18px;
+}
