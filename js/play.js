@@ -18,6 +18,9 @@ const quizModal = document.getElementById("quiz-modal");
 const quizInfo = document.getElementById("quizInfo"); // 配点表示
 const quizQuestion = document.getElementById("quizQuestion"); // 問題文
 const quizAnswer = document.getElementById("quizAnswer"); // 答え
+const showQuestionRow = document.getElementById("showQuestionRow"); // 「問題を表示」段階
+const showQuestionButton = document.getElementById("showQuestionButton");
+const closeButton2 = document.getElementById("closeButton2");
 const revealRow = document.getElementById("revealRow"); // 「答えを見る」段階
 const revealButton = document.getElementById("revealButton");
 const closeButton = document.getElementById("closeButton");
@@ -28,6 +31,7 @@ const noWinnerButton = document.getElementById("noWinnerButton");
 
 // --- 状態 ---------------------------------------------------
 let quizData = null; // 作成データ
+let rules = { instantQuestion: true }; // 作成ページで決めたルール（既定＝即表示）
 let teams = []; // [{ name, score }]
 let currentPanel = null; // 出題中 { panelEl, points }
 let remaining = 0; // 未回答パネル数
@@ -79,9 +83,12 @@ function renderScoreboard() {
     name.value = t.name;
     name.addEventListener("input", () => (t.name = name.value)); // 名前を即反映
 
-    const score = document.createElement("div");
+    const score = document.createElement("input");
     score.className = "team-card-score";
-    score.textContent = t.score;
+    score.value = t.score;
+    score.type = "number";
+    score.min = "0";
+    score.addEventListener("input", () => (t.score = parseInt(score.value) || 0)); // スコアを即反映
 
     card.append(remove, name, score);
     scoreboardEl.appendChild(card);
@@ -127,7 +134,8 @@ function renderBoard(data) {
 // =============================================================
 // 出題モーダル
 // =============================================================
-// 問題を表示（答え・加点ボタンは隠した状態で開く）
+// モーダルを開く（答え・加点ボタンは隠した状態）
+// ルール instantQuestion が false のときは問題文も隠して「問題を表示」から始める
 function openQuiz(pd, points, panelEl) {
   currentPanel = { panelEl, points };
   quizInfo.textContent = `${points} 点`;
@@ -135,10 +143,22 @@ function openQuiz(pd, points, panelEl) {
   quizAnswer.textContent = pd.answer || "（答えが設定されていません）";
 
   quizAnswer.classList.add("hidden");
-  revealRow.classList.remove("hidden"); // 「答えを見る」段階
   scoreRow.classList.add("hidden"); // 加点段階は隠す
   teamButtons.innerHTML = ""; // 前回の加点ボタンを消す
+
+  // 問題文を出すかどうかで最初の段階を切り替える
+  quizQuestion.classList.toggle("hidden", !rules.instantQuestion);
+  showQuestionRow.classList.toggle("hidden", rules.instantQuestion);
+  revealRow.classList.toggle("hidden", !rules.instantQuestion);
+
   quizModal.style.display = "flex";
+}
+
+// 問題文を表示 → 「答えを見る」段階へ
+function showQuestion() {
+  quizQuestion.classList.remove("hidden");
+  showQuestionRow.classList.add("hidden");
+  revealRow.classList.remove("hidden");
 }
 
 // 答えを表示 → 加点段階へ
@@ -214,6 +234,8 @@ function showWinner() {
 // イベント登録
 // =============================================================
 addTeamBtn.addEventListener("click", addTeam);
+showQuestionButton.addEventListener("click", showQuestion);
+closeButton2.addEventListener("click", closeQuiz);
 revealButton.addEventListener("click", revealAnswer);
 closeButton.addEventListener("click", closeQuiz);
 noWinnerButton.addEventListener("click", noWinner);
@@ -236,6 +258,8 @@ quizData = loadData();
 if (!quizData) {
   board.textContent = "データがありません。先に作成ページでクイズを作ってください。";
 } else {
+  // ルールは既定値に上書きマージ（rules を持たない古いデータでも動く）
+  Object.assign(rules, quizData.rules);
   teams = [
     { name: "チーム1", score: 0 },
     { name: "チーム2", score: 0 },

@@ -115,6 +115,47 @@ h1 {
   align-items: center;
 }
 
+/* ===== ルール設定 ===== */
+.rules {
+  max-width: 640px;
+  margin: -12px auto 28px;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(4px);
+}
+.rules-title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.rule-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rule-item input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.rule-item small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
 /* ===== 盤面 ===== */
 .board {
   display: grid; /* グリッド配置（列・行はJSが指定） */
@@ -314,12 +355,14 @@ h1 {
   font-weight: 800;
   color: var(--accent);
 }
-#revealButton {
+#revealButton,
+#showQuestionButton {
   color: #fff;
   background: linear-gradient(180deg, #6d6df2, var(--accent));
   box-shadow: 0 4px 12px rgba(91, 91, 239, 0.35);
 }
-#closeButton {
+#closeButton,
+#closeButton2 {
   color: var(--muted);
   background: #eef0f7;
   border-color: var(--panel-border);
@@ -343,15 +386,15 @@ h1 {
 /* スコアボード */
 .scoreboard {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 .team-card {
   position: relative;
-  min-width: 120px;
-  padding: 20px 18px 12px;
+  width: 190px; /* カード幅は固定 */
+  padding: 8px 6px 4px;
   text-align: center;
   background: #fff;
   border: 1px solid var(--panel-border);
@@ -360,7 +403,7 @@ h1 {
   box-shadow: var(--shadow);
 }
 .team-card-name-input {
-  width: 96px;
+  width: 100%;
   text-align: center;
   font-weight: 700;
   color: var(--ink);
@@ -372,10 +415,32 @@ h1 {
   outline: none;
   border-bottom-color: var(--accent);
 }
+/* スコア（見た目は数字のまま・クリックで書き換えられる入力欄） */
 .team-card-score {
+  display: block;
+  width: 100%; /* カード幅が固定なので % が正しく効く */
+  padding: 0;
+  text-align: center;
+  font-family: inherit;
   font-size: 28px;
   font-weight: 800;
   color: var(--team-color, var(--accent));
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent; /* 下線ぶんの高さを常に確保 */
+  -moz-appearance: textfield; /* 上下矢印を隠す（Firefox） */
+  appearance: textfield;
+}
+/* 編集中だけ下線を出す（普段はただの数字に見せる） */
+.team-card-score:focus {
+  outline: none;
+  border-bottom-color: var(--team-color, var(--accent));
+}
+/* 上下矢印を隠す（Chrome / Safari） */
+.team-card-score::-webkit-outer-spin-button,
+.team-card-score::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .team-remove {
   position: absolute;

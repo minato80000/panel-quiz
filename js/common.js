@@ -13,6 +13,8 @@ const pointsInput = document.getElementById("editPoints");
 const questionInput = document.getElementById("editQuestion");
 const answerInput = document.getElementById("editAnswer");
 
+const instantQuestionInput = document.getElementById("ruleInstantQuestion"); // ルール：即問題表示
+
 const startButton = document.getElementById("start"); // クイズ開始ボタン
 const exportButton = document.getElementById("exportButton"); // JSON書き出し
 const importInput = document.getElementById("importInput"); // JSON読み込み
@@ -111,6 +113,10 @@ function collectData() {
     cols: colInput.value,
     genres: genres,
     panelData: panelData,
+    rules: {
+      // パネルを押した直後に問題文を出すか（false なら「問題を表示」を挟む）
+      instantQuestion: instantQuestionInput.checked,
+    },
   };
 }
 
@@ -123,6 +129,10 @@ function applyData(data) {
   if (data.genres) data.genres.forEach((genre, i) => (genres[i] = genre));
   for (const key in panelData) delete panelData[key];
   if (data.panelData) Object.assign(panelData, data.panelData);
+  // ルール（未設定の古いデータは既定値のまま）
+  if (data.rules && data.rules.instantQuestion != null) {
+    instantQuestionInput.checked = data.rules.instantQuestion;
+  }
 }
 
 // 現在の状態を保存する
@@ -144,14 +154,47 @@ function loadData() {
 // =============================================================
 // JSON エクスポート / インポート
 // =============================================================
-// 現在の状態を JSON ファイルとしてダウンロードする
-function exportData() {
+const DEFAULT_FILE_NAME = "panel-quiz.json";
+
+// 現在の状態を JSON ファイルとして保存する
+// 保存ダイアログが使えるブラウザ（Chrome/Edge）では保存場所とファイル名を選べる
+async function exportData() {
   const json = JSON.stringify(collectData(), null, 2);
+
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: DEFAULT_FILE_NAME,
+        types: [
+          {
+            description: "パネルクイズ (JSON)",
+            accept: { "application/json": [".json"] },
+          },
+        ],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(json);
+      await writable.close();
+      return;
+    } catch (e) {
+      if (e.name === "AbortError") return; // ユーザーがキャンセルした
+      console.error("Save dialog failed:", e); // それ以外はダウンロードで代替
+    }
+  }
+
+  // 非対応ブラウザ：ファイル名だけ聞いてダウンロードフォルダへ保存
+  const name = prompt("ファイル名", DEFAULT_FILE_NAME);
+  if (name === null) return; // キャンセル
+  downloadJson(json, name.endsWith(".json") ? name : `${name}.json`);
+}
+
+// 一時URLを作ってダウンロードさせる（保存場所はブラウザ任せ）
+function downloadJson(json, fileName) {
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "panel-quiz.json";
+  a.download = fileName;
   a.click();
   URL.revokeObjectURL(url); // 一時URLを解放
 }
@@ -207,6 +250,9 @@ colInput.addEventListener("change", () => {
   buildBoard();
   saveData();
 });
+
+// ルールの変更を保存
+instantQuestionInput.addEventListener("change", saveData);
 
 startButton.addEventListener("click", () => {
   saveData(); // 盤面の状態を保存してから
