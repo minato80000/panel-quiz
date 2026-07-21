@@ -16,7 +16,10 @@
     <div class="modal-content">
       <h2>パネルの設定</h2>
       <label>配点<input id="editPoints" type="number"></label>
-      <label>問題文<textarea id="editQuestion" placeholder="問題文を入力してください"></textarea></label>
+      <label>
+        <span class="label-row">問題文<span id="questionCount" class="char-count">0 文字</span></span>
+        <textarea id="editQuestion" placeholder="問題文を入力してください"></textarea>
+      </label>
       <label>解答<input id="editAnswer" type="text" placeholder="解答を入力してください"></label>
       <div class="modalButtons">
         <button id="saveButton">保存</button>
